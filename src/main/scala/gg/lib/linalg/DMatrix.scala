@@ -250,6 +250,20 @@ class DMatrix[T <% Ring[T]](m: Int, n: Int, elements: Array[T])(implicit classTa
    */
   def dotProd(that: DMatrix[T]): T = {
     //TODO errors etc
-    this.elements.zip(that.collect).map { case (a, b) => a * b }.reduce((x, y) => (x + y)).get
+    elements.zip(that.collect).map { case (a, b) => a * b }.reduce((x, y) => (x + y)).get
   }
+
+  /*
+   * ---------------------------------------------------------------------------------------------------------------------------------
+   * 													maps & co
+   * ---------------------------------------------------------------------------------------------------------------------------------
+   */
+  override def map[U <% Ring[U]](f: T => U)(implicit classTag: ClassTag[U]): DMatrix[U] = {
+    new DMatrix[U](m, n, elements.map(f))
+  }
+
+  override def reduce(f: (T, T) => T): T = {
+    elements.reduce(f)
+  }
+
 }

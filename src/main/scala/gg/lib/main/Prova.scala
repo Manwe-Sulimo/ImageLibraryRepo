@@ -10,10 +10,12 @@ import gg.lib.linalg.DMatrix
 import gg.lib.linalg.Ring
 import gg.lib.linalg.Intero
 import gg.lib.linalg.errors.IncompatibleMatrixTypeException
+import gg.lib.linalg.Decimale
 
 object Prova {
 
-  implicit val tras: (Int) => (Intero) = x => Intero(x)
+  implicit val trasfInt: (Int) => (Intero) = x => Intero(x)
+  implicit val trasDouble: (Double) => (Decimale) = x => Decimale(x)
 
   def main(args: Array[String]): Unit = {
 
@@ -38,8 +40,8 @@ object Prova {
 
     val dir = new File("C:\\Users\\Tinvention\\Desktop\\sample")
     val files = dir.listFiles().filter(el => el.getName().contains("jpeg")).map(el => el.getPath)
-    readImg(files(0))
-    // files.foreach(readImg)
+    //readImg(files(0))
+    files.foreach(readImg)
   }
 
   def readImg(path: String) = {
@@ -56,13 +58,13 @@ object Prova {
     val pixelIndexes = cross(rows, columns)
 
     val elementsBlue = pixelIndexes.map {
-      case (r, c) => parse(getRGBA(img.getRGB(c, r)))
+      case (r, c) => parse(getRGBA(img.getRGB(c, r)), 0)
     }
     val elementsGreen = pixelIndexes.map {
-      case (r, c) => parse(getRGBA(img.getRGB(c, r)))
+      case (r, c) => parse(getRGBA(img.getRGB(c, r)), 1)
     }
     val elementsRed = pixelIndexes.map {
-      case (r, c) => parse(getRGBA(img.getRGB(c, r)))
+      case (r, c) => parse(getRGBA(img.getRGB(c, r)), 2)
     }
 
     //filtri gradiente
@@ -91,27 +93,27 @@ object Prova {
    * Utils
    */
 
-  def elab(height: Int, width: Int, r: DMatrix[Int], filtro1: DMatrix[Int], filtro2: DMatrix[Int], filtro5: DMatrix[Int], file: File, pixelIndexes: Array[(Int, Int)], colore: String) = {
+  def elab(height: Int, width: Int, matrix: DMatrix[Int], filtro1: DMatrix[Int], filtro2: DMatrix[Int], filtro5: DMatrix[Int], file: File, pixelIndexes: Array[(Int, Int)], colore: String) = {
 
-    val mat1 = new DMatrix(height, width, r.conv(filtro5, 0).collect.map(el => el / 9))
+    val mat1 = matrix.conv(filtro5, 0).map(el => el / 9)
     //gradiente
-    val mat3 = new DMatrix(height, width, mat1.conv(filtro1, 0).collect.map(el => math.abs(el)))
-    val mat4 = new DMatrix(height, width, mat1.conv(filtro2, 0).collect.map(el => math.abs(el)))
+    val mat3 = mat1.conv(filtro1, 0).map(el => math.abs(el))
+    val mat4 = mat1.conv(filtro2, 0).map(el => math.abs(el))
 
     //somma gradienti
     val mat5 = mat3 + mat4
 
-    val meanGrad = mat5.collect.reduce((a, b) => a + b) / (mat5.size._1 * mat5.size._2)
+    val meanGrad = mat5.reduce((a, b) => a + b) / (mat5.size._1 * mat5.size._2)
+
     println(meanGrad)
 
     //binarizzazione
-    val xx = mat5.collect.map(el => if (el > 3 * meanGrad) 1 else 0)
-    val mat6 = new DMatrix(height, width, xx)
+    val mat6 = mat5.map(el => if (el > 3 * meanGrad) 1 else 0)
 
     //media intorno
-    val result6 = new DMatrix(height, width, mat6.conv(filtro5, 0).collect.map(el => if (el >= 4) 1 else 0))
-    val result7 = new DMatrix(height, width, result6.conv(filtro5, 0).collect.map(el => if (el >= 7) 1 else 0))
-    val result = new DMatrix(height, width, result7.conv(filtro5, 0).collect.map(el => if (el >= 7) 255 else 0))
+    val result6 = mat6.conv(filtro5, 0).map(el => if (el >= 4) 1 else 0)
+    val result7 = result6.conv(filtro5, 0).map(el => if (el >= 7) 1 else 0)
+    val result = result7.conv(filtro5, 0).map(el => if (el >= 7) 255 else 0)
 
     val out = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY)
     pixelIndexes.foreach { case (r, c) => out.setRGB(c, r, result(r, c) * 0x00010101) }
@@ -150,8 +152,8 @@ object Prova {
     }
   }
 
-  def parse(el: Tuple4[Int, Int, Int, Int], single: Boolean = false, component: Int = 0): Int = {
-    if (!single) {
+  def parse(el: Tuple4[Int, Int, Int, Int], component: Int = -1): Int = {
+    if (component == -1) {
       (Array[Int](el._1, el._2, el._3).reduce((a, b) => a + b) / 3).toInt
     } else {
       el.productElement(component).asInstanceOf[Int]

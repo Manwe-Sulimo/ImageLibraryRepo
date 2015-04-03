@@ -48,6 +48,17 @@ trait Matrix[T] {
   def conv(that: Matrix[T], tabValue: T): Matrix[T]
 
   /*
+   * map
+   */
+  def map[U <% Ring[U]](f: T => U)(implicit classTag: ClassTag[U]): Matrix[U]
+
+  /*
+   * reduce
+   */
+
+  def reduce(f: (T, T) => T): T
+
+  /*
    * TODO: check if is 1 by 1 and extract -> implement as implicit somewhere
    */
 
