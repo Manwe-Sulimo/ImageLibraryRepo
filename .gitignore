@@ -1,0 +1,8 @@
+#paths to ignore
+project/**
+target/**
+bin/**
+.project
+.cache
+.classpath
+.settings/**
