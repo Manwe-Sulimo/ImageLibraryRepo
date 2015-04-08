@@ -56,6 +56,9 @@ class DMatrix[T <% Ring[T]](m: Int, n: Int, elements: Array[T])(implicit classTa
     ???
   }
 
+  /**
+   * select submatrix
+   */
   def subMatrix(is: Array[Int], js: Array[Int]): DMatrix[T] = {
     val resM = is.length
     val resN = js.length
@@ -69,6 +72,23 @@ class DMatrix[T <% Ring[T]](m: Int, n: Int, elements: Array[T])(implicit classTa
     val is = ((i - dr) to (i + dr)).toArray
     val js = ((j - dc) to (j + dc)).toArray
     subMatrix(is, js)
+  }
+
+  /**
+   * map submatrix / update
+   */
+  def subMap(is: Array[Int], js: Array[Int], f: T => T): DMatrix[T] = {
+    val mappedEls = elements.clone
+    for (i <- is; j <- js) {
+      mappedEls(i * n + j) = f(mappedEls(i * n + j))
+    }
+    new DMatrix(m, n, mappedEls)
+  }
+
+  def subMap(i: Int, j: Int, dr: Int, dc: Int, f: T => T): DMatrix[T] = {
+    val is = ((i - dr) to (i + dr)).toArray
+    val js = ((j - dc) to (j + dc)).toArray
+    subMap(is, js, f)
   }
 
   /**
@@ -134,8 +154,8 @@ class DMatrix[T <% Ring[T]](m: Int, n: Int, elements: Array[T])(implicit classTa
       case dm: DMatrix[T] => {
         val dat = that.asInstanceOf[DMatrix[T]]
         //if matrix sizes are not compatible throw an exception
-        if (this.size != dat.size) {
-          throw new IncompatibleMatrixDimensionsException(this.size, dat.size)
+        if (size != dat.size) {
+          throw new IncompatibleMatrixDimensionsException(size, dat.size)
         }
         val resArray = elements.zip(dat.collect).map(el => (el._1 + el._2).get)
         new DMatrix(m, n, resArray)
@@ -158,8 +178,8 @@ class DMatrix[T <% Ring[T]](m: Int, n: Int, elements: Array[T])(implicit classTa
       case dm: DMatrix[T] => {
         val dat = that.asInstanceOf[DMatrix[T]]
         //if matrix sizes are not compatible throw an exception
-        if (this.size._2 != dat.size._1) {
-          throw new IncompatibleMatrixDimensionsException(this.size, dat.size)
+        if (size._2 != dat.size._1) {
+          throw new IncompatibleMatrixDimensionsException(size, dat.size)
         }
         // otherwise return the matrix resulting from the product
         val resM = m
@@ -250,6 +270,9 @@ class DMatrix[T <% Ring[T]](m: Int, n: Int, elements: Array[T])(implicit classTa
    */
   def dotProd(that: DMatrix[T]): T = {
     //TODO errors etc
+    if (n != that.size._1) {
+      throw new IncompatibleMatrixDimensionsException(size, that.size)
+    }
     elements.zip(that.collect).map { case (a, b) => a * b }.reduce((x, y) => (x + y)).get
   }
 
@@ -266,4 +289,16 @@ class DMatrix[T <% Ring[T]](m: Int, n: Int, elements: Array[T])(implicit classTa
     elements.reduce(f)
   }
 
+  override def equals(that: Any) = {
+    if (that.isInstanceOf[DMatrix[T]]) {
+      val dat = that.asInstanceOf[DMatrix[T]]
+      if (size != dat.size) {
+        false
+      } else {
+        collect.zip(dat.collect).forall(x => (x._1).equals(x._2))
+      }
+    } else {
+      false
+    }
+  }
 }
