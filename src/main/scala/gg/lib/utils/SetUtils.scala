@@ -31,9 +31,9 @@ trait SetUtils {
     val height = mat.size._1
     val width = mat.size._2
 
-    val stepR = 72
+    val stepR = 20
     val rs = Range.inclusive(2 * stepR, stepR + height - 1, (2 * stepR)).toArray
-    val stepC = 72
+    val stepC = 20
     val cs = Range.inclusive(2 * stepC, stepC + width - 1, (2 * stepC)).toArray
 
     val knots = cross(rs, cs).reverse
