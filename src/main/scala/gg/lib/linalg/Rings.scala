@@ -55,4 +55,24 @@ case class Decimale(x: Double) extends Field[Double] with TotalOrder[Decimale] {
   override def <(that: Decimale) = x < that.get
 }
 
+/**
+ * (Int, Int, Int) to Ring[(Int, Int, Int)] wrapper
+ */
+case class DSInt3(x: (Int, Int, Int)) extends Ring[(Int, Int, Int)] {
+  //ring trait
+  override def neg: DSInt3 = DSInt3((-x._1, -x._2, -x._3))
+  override def +(that: Ring[(Int, Int, Int)]): DSInt3 = {
+    val dat = that.get
+    val res = (x._1 + dat._1, x._2 + dat._2, x._3 + dat._3)
+    DSInt3(res)
+  }
+  override def *(that: Ring[(Int, Int, Int)]): DSInt3 = {
+    val dat = that.get
+    val res = (x._1 * dat._1, x._2 * dat._2, x._3 * dat._3)
+    DSInt3(res)
+  }
+  override def get: (Int, Int, Int) = x
 
+  //useful
+  def toArray: Array[Int] = Array(x._1, x._2, x._3)
+}

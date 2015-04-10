@@ -6,6 +6,7 @@ import gg.lib.linalg.Intero
 import scala.reflect.ClassTag
 import gg.lib.linalg.Ring
 import scala.util.Sorting
+import gg.lib.linalg.DSInt3
 
 trait SetUtils {
   /*
@@ -21,6 +22,13 @@ trait SetUtils {
    */
   def max[T <: TotalOrder[T]](matrix: DMatrix[T]): T = {
     matrix.collect.reduce((a, b) => TotalOrder.max(a, b))
+  }
+
+  /**
+   * distance betweem two DSInt3 elements
+   */
+  def dist(a: DSInt3, b: DSInt3): Double = {
+    math.sqrt(a.toArray.zip(b.toArray).map { case (a, b) => (a * a + b * b) }.reduce((a, b) => a + b))
   }
 
   /**
