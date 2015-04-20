@@ -17,7 +17,7 @@ object FourthStep extends ImgUtils {
   def execute(inDir: String, outDir: String) = {
     // read image files
     val dir = new File(inDir)
-    val files = dir.listFiles().filter(el => el.getName().contains("jpeg")).map(el => el.getPath)
+    val files = dir.listFiles().filter(el => el.getName().contains("tif")).map(el => el.getPath)
 
     // load images, parse data, save results
     files.foreach(filePath => {

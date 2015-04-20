@@ -8,34 +8,48 @@ import java.util.logging.Logger
 import java.io.File
 import java.util.logging.Level
 import gg.lib.utils.ImgUtils
+import gg.lib.linalg.Decimale
+import gg.lib.utils.LargeConv
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 object SecondStep extends ImgUtils {
-  implicit val trasfInt: (Int) => (Intero) = x => Intero(x)
+  implicit val trasfInt: (Double) => (Decimale) = x => Decimale(x)
+  implicit val fi2fd: ((Int) => (Int)) => ((Double) => (Int)) = {
+    f => x: Double => f(x.toInt)
+  }
+
   private val log: Logger = Logger.getGlobal()
 
   def execute(inDir: String, outDir: String) = {
+    val pool: ExecutorService = Executors.newFixedThreadPool(7)
     // read image files
     val dir = new File(inDir)
     val files = dir.listFiles().filter(el => el.getName().contains("jpeg")).map(el => el.getPath)
+    try {
+      // load images, parse data, save results
+      files.foreach(filePath => {
 
-    // load images, parse data, save results
-    files.foreach(filePath => {
+        val fileName = new File(filePath).getName()
 
-      val fileName = new File(filePath).getName()
+        val (img, pixelIndexes) = read(filePath)
+        val width = img.getWidth
+        val height = img.getHeight
 
-      val (img, pixelIndexes) = read(filePath)
-      val width = img.getWidth
-      val height = img.getHeight
+        log.log(Level.INFO, "Starting white")
 
-      log.log(Level.INFO, "Starting white")
+        val elementsWhite = pixelIndexes.map { case (row, col) => parse(getRGBA(img.getRGB(col, row)), 4).toDouble }
+        val w = new DMatrix[Double](height, width, elementsWhite)
+        log.log(Level.INFO, "Starting computation")
+        val wc = compute(w, height, width, pool)
+        log.log(Level.INFO, "Ended computation")
+        write(wc, pixelIndexes, outDir + fileName.replaceFirst("jpeg", "png"))
 
-      val elementsWhite = pixelIndexes.map { case (row, col) => parse(getRGBA(img.getRGB(col, row)), 4) }
-      val w = new DMatrix[Int](height, width, elementsWhite)
-      val wc = compute(w, height, width)
-      write(wc, pixelIndexes, outDir + fileName.replaceFirst("\\.", "_white."))
-
-      log.log(Level.INFO, "Ended  white")
-    })
+        log.log(Level.INFO, "Ended  white")
+      })
+    } finally {
+      pool.shutdown()
+    }
   }
 
   /**
@@ -48,66 +62,85 @@ object SecondStep extends ImgUtils {
   /**
    * compute
    */
-  def compute(matrix: DMatrix[Int], height: Int, width: Int) = {
+  def compute(matrix: DMatrix[Double], height: Int, width: Int, pool: ExecutorService) = {
 
     // filtro 0
-    val filtro0 = new DMatrix[Int](3, 3, Array(1, 1, 1,
+    val filtro0 = new DMatrix[Double](3, 3, Array(1, 1, 1,
       1, 0, 1,
       1, 1, 1))
 
     // filtro 1
-    val filtro1 = new DMatrix[Int](3, 3, Array(1, 0, 0,
+    val filtro1 = new DMatrix[Double](3, 3, Array(1, 0, 0,
       0, 1, 0,
       0, 0, 1))
 
     // filtro 2
-    val filtro2 = new DMatrix[Int](3, 3, Array(0, 1, 0,
+    val filtro2 = new DMatrix[Double](3, 3, Array(0, 1, 0,
       0, 0, 0,
       0, 1, 0))
 
     // filtro 3
-    val filtro3 = new DMatrix[Int](3, 3, Array(0, 0, 1,
+    val filtro3 = new DMatrix[Double](3, 3, Array(0, 0, 1,
       0, 0, 0,
       1, 0, 0))
 
     // filtro 4
-    val filtro4 = new DMatrix[Int](3, 3, Array(0, 0, 0,
+    val filtro4 = new DMatrix[Double](3, 3, Array(0, 0, 0,
       1, 0, 1,
       0, 0, 0))
-
     // soglia intorno  
-    val mat0 = matrix.conv(filtro0, 0).map(el => if (el >= 2) 1 else 0)
+    println("FIRST CONV")
+    val mat0 = new LargeConv(matrix, filtro0, 0, pool).call.map(el => if (el >= 1) 1.0 else 0.0)
+    System.gc()
+    println("SECOND CONV")
+    // applicazione filtro
+    val mat1 = new LargeConv(mat0, filtro1, 0, pool).call.map(el => if (el >= 1) 1.0 else 0.0)
+    System.gc()
+    println("THIRD CONV")
+    System.gc()
+    // applicazione filtro
+    val mat2 = new LargeConv(mat0, filtro2, 0, pool).call.map(el => if (el >= 1) 1.0 else 0.0)
+    println("FOURTH CONV")
+    System.gc()
+    // applicazione filtro
+    val mat3 = new LargeConv(mat0, filtro3, 0, pool).call.map(el => if (el >= 1) 1.0 else 0.0)
+    println("FIFTH CONV")
+    System.gc()
+    // applicazione filtro
+    val mat4 = new LargeConv(mat0, filtro4, 0, pool).call.map(el => if (el >= 1) 1.0 else 0.0)
 
-    // applicazione filtro
-    val mat1 = mat0.conv(filtro1, 0).map(el => if (el >= 2) 1 else 0)
-    // applicazione filtro
-    val mat2 = mat0.conv(filtro2, 0).map(el => if (el >= 2) 1 else 0)
-    // applicazione filtro
-    val mat3 = mat0.conv(filtro3, 0).map(el => if (el >= 2) 1 else 0)
-    // applicazione filtro
-    val mat4 = mat0.conv(filtro4, 0).map(el => if (el >= 2) 1 else 0)
-
+    println("SUM RESULTS")
+    System.gc()
     // somma risultati
-    val mat = (mat1 + mat2 + mat3 + mat4).map(el => if (el > 0) 1 else 0)
+    val mat = (mat1 + mat2 + mat3 + mat4).map(el => if (el > 0) 1.0 else 0.0)
 
-    // applicazione filtro
-    val mat5 = mat.conv(filtro1, 0).map(el => if (el >= 2) 1 else 0)
-    // applicazione filtro
-    val mat6 = mat.conv(filtro2, 0).map(el => if (el >= 2) 1 else 0)
-    // applicazione filtro
-    val mat7 = mat.conv(filtro3, 0).map(el => if (el >= 2) 1 else 0)
-    // applicazione filtro
-    val mat8 = mat.conv(filtro4, 0).map(el => if (el >= 2) 1 else 0)
-    
-    val result = mat.map(el => if (el > 0) 255 else 0)
+    //    // applicazione filtro
+    //    println("SEVENTH CONV")
+    //    System.gc()
+    //    val mat5 = new LargeConv(mat, filtro1, 0, pool).call.map(el => if (el >= 2) 1.0 else 0.0)
+    //    // applicazione filtro
+    //    println("EIGTH CONV")
+    //    System.gc()
+    //    val mat6 = new LargeConv(mat, filtro2, 0, pool).call.map(el => if (el >= 2) 1.0 else 0.0)
+    //    println("NINTH CONV")
+    //    System.gc()
+    //    // applicazione filtro
+    //    val mat7 = new LargeConv(mat, filtro3, 0, pool).call.map(el => if (el >= 2) 1.0 else 0.0)
+    //    println("TENTH CONV")
+    //    System.gc()
+    //    // applicazione filtro
+    //    val mat8 = new LargeConv(mat, filtro4, 0, pool).call.map(el => if (el >= 2) 1.0 else 0.0)
+
+    val result = mat.map(el => if (el > 0) 255.0 else 0.0)
     result
+
   }
 
   /**
    * write
    */
-  def write(matrix: DMatrix[Int], pixelIndexes: Array[(Int, Int)], outPath: String) = {
-    Images.writeImage(matrix, pixelIndexes, outPath, "jpeg", BufferedImage.TYPE_BYTE_BINARY, int2Grey)
+  def write(matrix: DMatrix[Double], pixelIndexes: Array[(Int, Int)], outPath: String) = {
+    Images.writeImage(matrix, pixelIndexes, outPath, "png", BufferedImage.TYPE_BYTE_GRAY, int2Grey)
   }
 
 }

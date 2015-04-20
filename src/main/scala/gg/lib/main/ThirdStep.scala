@@ -21,7 +21,7 @@ object ThirdStep extends ImgUtils with SetUtils {
   def execute(inDir: String, outDir: String) = {
     // read image files
     val dir = new File(inDir)
-    val files = dir.listFiles().filter(el => el.getName().contains("jpeg")).map(el => el.getPath)
+    val files = dir.listFiles().filter(el => el.getName().contains("tif")).map(el => el.getPath)
 
     // load images, parse data, save results
     files.foreach(filePath => {
@@ -64,7 +64,7 @@ object ThirdStep extends ImgUtils with SetUtils {
    */
   def write(matrix: DMatrix[Int], pixelIndexes: Array[(Int, Int)], outPath: String) = {
     def f: Int => Int = x => x
-    Images.writeImage(matrix, pixelIndexes, outPath, "jpeg", BufferedImage.TYPE_INT_BGR, f)
+    Images.writeImage(matrix, pixelIndexes, outPath, "png", BufferedImage.TYPE_INT_BGR, f)
 
     //    val pw = new PrintWriter(outPath)
     //

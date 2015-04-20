@@ -32,6 +32,7 @@ class DMatrix[T <% Ring[T]](m: Int, n: Int, elements: Array[T])(implicit classTa
    * ---------------------------------------------------------------------------------------------------------------------------------
    */
 
+  //TODO handle exceptions
   def row(i: Int): DMatrix[T] = {
     //invalid row index => throw exception
     if (i >= m) throw new IndexIncompatibleWithMatrixDimensionException("Received row index " + i + " on matrix with " + m + " rows")
@@ -40,20 +41,33 @@ class DMatrix[T <% Ring[T]](m: Int, n: Int, elements: Array[T])(implicit classTa
     new DMatrix[T](1, n, els)
   }
 
+  //TODO handle exceptions
   def column(j: Int): DMatrix[T] = {
     //invalid column index => throw exception
     if (j >= n) throw new IndexIncompatibleWithMatrixDimensionException("Received column index " + j + " on matrix with " + n + " columns")
-    //otherwisereturn the selected column (range.endvalue=m*n+j and not (m-1)*n+j)
+    //otherwise return the selected column
     val els = List.range(j, m * n + j, n).map(index => this(index)).toArray
     new DMatrix[T](m, 1, els)
   }
 
+  //TODO handle exceptions
   def removeRow(i: Int): DMatrix[T] = {
-    ???
+    //invalid row index => throw exception
+    if (i >= m) throw new IndexIncompatibleWithMatrixDimensionException("Received row index " + i + " on matrix with " + m + " rows")
+    //otherwise remove the selected row and return the result
+    val els = List.range(i * n, i * n + n)
+    val res = elements.zipWithIndex.filterNot { case (el, ind) => els.contains(ind) }.map { case (el, ind) => el }.toArray
+    new DMatrix[T](m - 1, n, res)
   }
 
+  //TODO handle exceptions
   def removeColumn(j: Int): DMatrix[T] = {
-    ???
+    //invalid column index => throw exception
+    if (j >= n) throw new IndexIncompatibleWithMatrixDimensionException("Received column index " + j + " on matrix with " + n + " columns")
+    //otherwise remove the selected column and return the result
+    val els = List.range(j, m * n + j, n)
+    val res = elements.zipWithIndex.filterNot { case (el, ind) => els.contains(ind) }.map { case (el, ind) => el }.toArray
+    new DMatrix[T](m, n - 1, res)
   }
 
   /**
@@ -259,6 +273,36 @@ class DMatrix[T <% Ring[T]](m: Int, n: Int, elements: Array[T])(implicit classTa
     }
   }
 
+  /**
+   * 'helper' for already tabbed matrix
+   * "convolution" product with $that
+   * nb: that.size should be (2*h+1,2*k+1)
+   */
+  def tabbedConv(that: Matrix[T]): DMatrix[T] = {
+    val clazz1 = classOf[DMatrix[T]]
+    val clazz2 = that.getClass()
+    that match {
+      case dm: DMatrix[T] => {
+        val dat = that.asInstanceOf[DMatrix[T]]
+        val dr = (dat.size._1 - 1) / 2
+        val dc = (dat.size._2 - 1) / 2
+        val newM = (m - 2 * dr)
+        val newN = (n - 2 * dc)
+        val builder: ArrayBuilder[T] = ArrayBuilder.make[T]
+        builder.sizeHint(newM * newM)
+
+        for (i <- dr until (m - dr); j <- dc until (n - dc)) {
+          builder += subMatrix(i, j, dr, dc).dotProd(dat)
+        }
+
+        new DMatrix[T](newM, newN, builder.result)
+      }
+      case _ => {
+        //matrix types are incompatible => throw exception
+        throw new IncompatibleMatrixTypeException(clazz1, clazz2)
+      }
+    }
+  }
   /*
    * ---------------------------------------------------------------------------------------------------------------------------------
    * 														UTILS
@@ -300,5 +344,15 @@ class DMatrix[T <% Ring[T]](m: Int, n: Int, elements: Array[T])(implicit classTa
     } else {
       false
     }
+  }
+
+  override def toString() = {
+    val builder: StringBuilder = new StringBuilder
+    for (i <- 0 until m) {
+      val pref = "Line " + i + ", columns 0 to " + (n - 1) + ":\n\t"
+      val suff = row(i).collect.mkString("[\t", "\t,\t", "\t]\n")
+      builder ++= pref ++= suff
+    }
+    builder.result
   }
 }

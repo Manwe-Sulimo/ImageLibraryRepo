@@ -75,4 +75,32 @@ case class DSInt3(x: (Int, Int, Int)) extends Ring[(Int, Int, Int)] {
 
   //useful
   def toArray: Array[Int] = Array(x._1, x._2, x._3)
+  def dotDiv(den: Int) = DSInt3(x._1 / den, x._2 / den, x._3 / den)
+  def norm: Int = math.sqrt((toArray zip toArray).map { case (a, b) => a * b }.reduce((a, b) => a + b)).toInt
+}
+
+
+
+/**
+ * (Double, Double, Double) to DSDouble3[(Double, Double, Double)] wrapper
+ */
+case class DSDouble3(x: (Double, Double, Double)) extends Ring[(Double, Double, Double)] {
+  //ring trait
+  override def neg: DSDouble3 = DSDouble3((-x._1, -x._2, -x._3))
+  override def +(that: Ring[(Double, Double, Double)]): DSDouble3 = {
+    val dat = that.get
+    val res = (x._1 + dat._1, x._2 + dat._2, x._3 + dat._3)
+    DSDouble3(res)
+  }
+  override def *(that: Ring[(Double, Double, Double)]): DSDouble3 = {
+    val dat = that.get
+    val res = (x._1 * dat._1, x._2 * dat._2, x._3 * dat._3)
+    DSDouble3(res)
+  }
+  override def get: (Double, Double, Double) = x
+
+  //useful
+  def toArray: Array[Double] = Array(x._1, x._2, x._3)
+  def dotDiv(den: Double) = DSDouble3(x._1 / den, x._2 / den, x._3 / den)
+  def norm: Double = math.sqrt((toArray zip toArray).map { case (a, b) => a * b }.reduce((a, b) => a + b))
 }

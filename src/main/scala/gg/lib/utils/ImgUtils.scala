@@ -65,7 +65,7 @@ trait ImgUtils {
       el.productElement(index).asInstanceOf[Int]
     }
     case 4 => {
-      math.min(el._1, 255) / 255
+      math.min(el._3, 255) / 255
     }
     case 5 => {
       (Array[Int](el._1, el._2, el._3).reduce((a, b) => math.max(a, b))).toInt

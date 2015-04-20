@@ -1,0 +1,17 @@
+semigroup
+monoid
+group
+
+semiring
+ring
+field
+
+module (finite dimension)
+vector-space (finite dimension)
+
+algebra
+
+(vector?)
+matrix
+
+(Hom?)

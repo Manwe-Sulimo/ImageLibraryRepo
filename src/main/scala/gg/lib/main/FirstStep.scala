@@ -114,7 +114,7 @@ object FirstStep extends ImgUtils {
    * write
    */
   def write(matrix: DMatrix[Int], pixelIndexes: Array[(Int, Int)], outPath: String) = {
-    Images.writeImage(matrix, pixelIndexes, outPath, "jpeg", BufferedImage.TYPE_BYTE_BINARY, int2Grey)
+    Images.writeImage(matrix, pixelIndexes, outPath, "png", BufferedImage.TYPE_BYTE_BINARY, int2Grey)
   }
 
 }

@@ -7,6 +7,7 @@ import scala.reflect.ClassTag
 import gg.lib.linalg.Ring
 import scala.util.Sorting
 import gg.lib.linalg.DSInt3
+import gg.lib.linalg.DSDouble3
 
 trait SetUtils {
   /*
@@ -28,7 +29,13 @@ trait SetUtils {
    * distance betweem two DSInt3 elements
    */
   def dist(a: DSInt3, b: DSInt3): Double = {
-    math.sqrt(a.toArray.zip(b.toArray).map { case (a, b) => (a * a + b * b) }.reduce((a, b) => a + b))
+    math.sqrt(a.toArray.zip(b.toArray).map { case (a, b) => (a - b) * (a - b) }.reduce((a, b) => a + b))
+  }
+  /**
+   * distance betweem two DSDouble3 elements
+   */
+  def dist(a: DSDouble3, b: DSDouble3): Double = {
+    math.sqrt(a.toArray.zip(b.toArray).map { case (a, b) => (a - b) * (a - b) }.reduce((a, b) => a + b))
   }
 
   /**

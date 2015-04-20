@@ -31,14 +31,14 @@ object FifthStep extends ImgUtils {
 
     // read image files
     val dir = new File(inDir)
-    val files = dir.listFiles().filter(el => el.getName().contains("jpeg")).map(el => el.getPath)
+    val files = dir.listFiles().filter(el => el.getName().contains("tif")).map(el => el.getPath)
 
     // load images, parse data, save results
     files.foreach(filePath => {
 
       val fileName = new File(filePath).getName()
       val statFile = statDir + fileName.split('.')(0) + ".stat"
-      val outFile = outDir + fileName.split('.')(0) + ".jpg"
+      val outFile = outDir + fileName.split('.')(0) + ".tif"
 
       log.log(Level.INFO, "Starting with " + fileName)
 
@@ -80,7 +80,7 @@ object FifthStep extends ImgUtils {
    */
   def write(result: DMatrix[Int], pixelIndexes: Array[(Int, Int)], outPath: String) = {
 
-    Images.writeImage(result, pixelIndexes, outPath, "jpeg", BufferedImage.TYPE_BYTE_BINARY, int2Grey)
+    Images.writeImage(result, pixelIndexes, outPath, "tif", BufferedImage.TYPE_BYTE_BINARY, int2Grey)
   }
 
 }
