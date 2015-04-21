@@ -92,7 +92,7 @@ object FirstStep extends ImgUtils {
     val mat2 = mat1.conv(filtro1, 0).map(el => math.abs(el))
     // gradiente 2
     val mat3 = mat1.conv(filtro2, 0).map(el => math.abs(el))
-    // max gradienti (OSS: temporaneo, ci sarà max(mat1,mat2) in  versioni future di Matrix)
+    // max gradienti (OSS: temporaneo, ci sara' max(mat1,mat2) in  versioni future di Matrix)
     val mat4 = new DMatrix(height, width, mat2.collect.zip(mat3.collect).map { case (a, b) => math.max(a, b) })
 
     // calcolo gradiente medio

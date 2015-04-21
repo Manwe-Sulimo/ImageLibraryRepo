@@ -30,11 +30,11 @@ object Prova {
 
     //        FirstStep.execute("C:\\Users\\Tinvention\\Desktop\\sample\\", "C:\\Users\\Tinvention\\Desktop\\sample\\0-out\\")
 
-    val start2 = System.currentTimeMillis()
-    SecondStep.execute("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp_filtered\\")
-    val end2 = System.currentTimeMillis()
-    val time2 = ((end2 - start2).toDouble) / (1000 * 60)
-    log.log(Level.INFO, "Total time for step2 (mins): " + time2)
+//    val start2 = System.currentTimeMillis()
+//    SecondStep.execute("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp_filtered\\")
+//    val end2 = System.currentTimeMillis()
+//    val time2 = ((end2 - start2).toDouble) / (1000 * 60)
+//    log.log(Level.INFO, "Total time for step2 (mins): " + time2)
 
     //    val start3 = System.currentTimeMillis()
     //    ThirdStep.execute("C:\\Users\\Tinvention\\Desktop\\sample\\3-out\\", "C:\\Users\\Tinvention\\Desktop\\sample\\4-out\\")

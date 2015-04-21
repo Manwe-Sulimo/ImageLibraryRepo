@@ -2,7 +2,6 @@ semigroup
 monoid
 group
 
-semiring
 ring
 field
 

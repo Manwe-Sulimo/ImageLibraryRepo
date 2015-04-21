@@ -6,3 +6,4 @@ bin/**
 .cache
 .classpath
 .settings/**
+/bin
