@@ -12,6 +12,7 @@ import scala.io.BufferedSource
 import scala.io.Source
 import gg.lib.linalg.DMatrix
 import gg.lib.utils.ImgUtils
+import scala.language.postfixOps
 
 object FifthStep extends ImgUtils {
   implicit val trasfInt: (Int) => (Intero) = x => Intero(x)

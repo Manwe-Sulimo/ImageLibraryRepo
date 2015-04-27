@@ -14,6 +14,14 @@ trait Matrix[T] {
   def -(that: Matrix[T]): Matrix[T]
   def *(that: Matrix[T]): Matrix[T]
   def transpose: Matrix[T]
+
+  //convenience method (shortens implementation of the above methods in classes wich actually implement this trait)
+  def toMatrixDense: MatrixDense[T] = {
+    this match {
+      case _: MatrixDense[T] => this.asInstanceOf[MatrixDense[T]]
+      case _ => { ??? }
+    }
+  }
 }
 
 trait MatrixOps[T] {

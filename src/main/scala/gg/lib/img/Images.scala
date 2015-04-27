@@ -6,6 +6,8 @@ import java.io.File
 import gg.lib.utils.SetUtils
 import gg.lib.linalg.DMatrix
 import gg.lib.utils.ImgUtils
+import scala.language.postfixOps
+
 
 object Images extends SetUtils {
 

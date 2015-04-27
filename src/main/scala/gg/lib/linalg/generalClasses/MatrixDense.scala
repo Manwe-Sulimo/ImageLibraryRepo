@@ -1,8 +1,9 @@
 package gg.lib.linalg.generalClasses
 
 import scala.reflect.ClassTag
-
 import gg.lib.linalg.general.Ring
+import scala.language.postfixOps
+import gg.lib.linalg.errors.IncompatibleMatrixDimensionsException
 
 /**
  * Representation of an m by n dense matrix
@@ -17,8 +18,8 @@ class MatrixDense[T](mm: Int, nn: Int, elements: Array[T])(implicit ring: Ring[T
 
   val m = mm
   val n = nn
-  var structElements: Array[Array[T]] = Array.empty[Array[T]]
-  if (elements != Array.empty[T]) {
+  var structElements: Array[Array[T]] = Array.ofDim[T](m, n)
+  if (elements.length != Array.empty[T].length) {
     require(mm * nn == elements.length)
     structElements = 0 until m map (i => 0 until n map (j => elements(i * n + j)) toArray) toArray
   }
@@ -49,9 +50,9 @@ class MatrixDense[T](mm: Int, nn: Int, elements: Array[T])(implicit ring: Ring[T
     new MatrixDense[T](rows.map(i => columns.map(j => apply(i, j))))
   }
   def update(rows: Array[Int], columns: Array[Int], updateMatrix: MatrixDense[T]): Unit = {
-    require(rows.length * columns.length == updateMatrix.m * updateMatrix.n)
-    for (i <- rows; j <- columns) {
-      update(i, j, updateMatrix(i, j))
+    require(rows.length == updateMatrix.m && columns.length == updateMatrix.n)
+    for (i <- 0 until rows.length; j <- 0 until columns.length) {
+      update(rows(i), columns(j), updateMatrix(i, j))
     }
   }
   def update(rows: Array[Int], columns: Array[Int], value: T): Unit = {
@@ -62,7 +63,10 @@ class MatrixDense[T](mm: Int, nn: Int, elements: Array[T])(implicit ring: Ring[T
 
   // convenience methods to extract/set rows or columns
   def row(i: Int): Array[T] = structElements(i)
-  def updateRow(i: Int, newRow: Array[T]): Unit = structElements(i) = newRow
+  def updateRow(i: Int, newRow: Array[T]): Unit = this.structElements(i) = newRow
+  def column(j: Int): Array[T] = 0 until m map (i => structElements(i)(j)) toArray
+  def updateColumn(j: Int, newColumn: Array[T]): Unit = 0 until m foreach (i => this.structElements(i)(j) = newColumn(i))
+
   // --------------------------------------------------------------------------
   //
   //						matrix trait implementation
@@ -70,24 +74,51 @@ class MatrixDense[T](mm: Int, nn: Int, elements: Array[T])(implicit ring: Ring[T
   // --------------------------------------------------------------------------
 
   override def +(that: Matrix[T]): MatrixDense[T] = {
-
-    ???
+    if (!canSum(that)) {
+      throw new IncompatibleMatrixDimensionsException
+    }
+    val dat = that.toMatrixDense
+    var temp = Array.ofDim[T](m, n)
+    for (i <- 0 until m; j <- 0 until n) {
+      temp(i)(j) = ring.+(this(i, j), dat(i, j))
+    }
+    new MatrixDense(temp)
   }
   override def unary_- : MatrixDense[T] = {
-
-    ???
+    var temp = Array.ofDim[T](m, n)
+    for (i <- 0 until m; j <- 0 until n) {
+      temp(i)(j) = ring.-(this(i, j))
+    }
+    new MatrixDense(temp)
   }
   override def -(that: Matrix[T]): MatrixDense[T] = {
-
-    ???
+    if (!canSum(that)) {
+      throw new IncompatibleMatrixDimensionsException
+    }
+    val dat = that.toMatrixDense
+    var temp = Array.ofDim[T](m, n)
+    for (i <- 0 until m; j <- 0 until n) {
+      temp(i)(j) = ring.-(this(i, j), dat(i, j))
+    }
+    new MatrixDense(temp)
   }
   override def *(that: Matrix[T]): MatrixDense[T] = {
-
-    ???
+    if (!canMultiply(that)) {
+      throw new IncompatibleMatrixDimensionsException
+    }
+    val dat = that.toMatrixDense
+    var temp = Array.ofDim[T](m, dat.n)
+    for (i <- 0 until m; j <- 0 until dat.n) {
+      temp(i)(j) = row(i).zip(dat.column(j)).map { case (a, b) => ring.*(a, b) }.reduce((a, b) => ring.+(a, b))
+    }
+    new MatrixDense(temp)
   }
   override def transpose: MatrixDense[T] = {
-
-    ???
+    var temp = Array.ofDim[T](n, m)
+    for (i <- 0 until m; j <- 0 until n) {
+      temp(j)(i) = this(i, j)
+    }
+    new MatrixDense(temp)
   }
 
   // --------------------------------------------------------------------------
@@ -116,7 +147,7 @@ class MatrixDense[T](mm: Int, nn: Int, elements: Array[T])(implicit ring: Ring[T
 
   // --------------------------------------------------------------------------
   //
-  //							everything else 
+  //						hashCode, equals, toString 
   // TODO: error handling
   // --------------------------------------------------------------------------
 
@@ -142,28 +173,4 @@ class MatrixDense[T](mm: Int, nn: Int, elements: Array[T])(implicit ring: Ring[T
 
   // tostring
   override def toString: String = structElements.map(row => row.mkString("[\t", "\t|\t", "\t]")).mkString("", "\n", "")
-}
-
-object MD {
-  def main(args: Array[String]): Unit = {
-    val els = Array(
-      0, 1, 2, 3, 4,
-      5, 6, 7, 8, 9)
-
-    val m = new MatrixDense(2, 5, els)
-    m(1, 3) = 10
-    m.updateRow(1, Array[Int](11, 12, 13, 14, 15))
-
-    val n = new MatrixDense(2, 5, els)
-    n(1, 3) = 10
-    n.updateRow(1, Array[Int](11, 12, 13, 14, 15))
-
-    println(n.hashCode())
-    println(m.hashCode())
-    println(n.hashCode() - m.hashCode())
-    println(n.equals(m))
-
-    println(n)
-    println(m)
-  }
 }
