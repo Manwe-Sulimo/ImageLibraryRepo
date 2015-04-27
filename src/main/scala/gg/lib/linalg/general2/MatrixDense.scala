@@ -1,4 +1,4 @@
-package gg.lib.linalg.generalClasses
+package gg.lib.linalg.general2
 
 import scala.reflect.ClassTag
 import gg.lib.linalg.general.Ring
@@ -26,7 +26,7 @@ class MatrixDense[T](mm: Int, nn: Int, elements: Array[T])(implicit ring: Ring[T
 
   // --------------------------------------------------------------------------
   //
-  // 				overloaded constructor: IT'S OVER 9000!
+  // 				overloaded constructors: IT'S OVER 9000!
   // TODO: error handling
   // --------------------------------------------------------------------------
 
@@ -173,4 +173,16 @@ class MatrixDense[T](mm: Int, nn: Int, elements: Array[T])(implicit ring: Ring[T
 
   // tostring
   override def toString: String = structElements.map(row => row.mkString("[\t", "\t|\t", "\t]")).mkString("", "\n", "")
+}
+
+/**
+ * MatrixDense companion object
+ */
+object MatrixDense {
+  def zeros[T](mm: Int, nn: Int)(implicit ring: Ring[T], classTag: ClassTag[T]) = {
+    new MatrixDense(Array.fill(mm, nn)(ring.zero))
+  }
+  def ones[T](mm: Int, nn: Int)(implicit ring: Ring[T], classTag: ClassTag[T]) = {
+    new MatrixDense(Array.fill(mm, nn)(ring.one))
+  }
 }

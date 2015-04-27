@@ -1,5 +1,12 @@
 package gg.lib.linalg.general
 
+import scala.math.BigInt.int2bigInt
+import gg.lib.linalg.general.Field.BigDecimalField
+import gg.lib.linalg.general.Field.ComplexField
+import gg.lib.linalg.general.Field.DoubleField
+import gg.lib.linalg.general.Field.FloatField
+import gg.lib.linalg.general2.Complex
+
 /**
  * Trait representing the concept of Ring (user is responsible of making sure that (T,+,*) is actually a Ring)
  * Won't make a different trait for Ring with * commutative etc
@@ -46,5 +53,5 @@ object Ring {
   implicit val FloatRing: Ring[Float] = FloatField
   implicit val DoubleRing: Ring[Double] = DoubleField
   implicit val BigDecimalRing: Ring[BigDecimal] = BigDecimalField
-
+  implicit val ComplexRing: Ring[Complex] = ComplexField
 }

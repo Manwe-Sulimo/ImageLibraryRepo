@@ -1,4 +1,4 @@
-package gg.lib.linalg.generalClasses
+package gg.lib.linalg.general2
 
 import gg.lib.linalg.general.Ring
 

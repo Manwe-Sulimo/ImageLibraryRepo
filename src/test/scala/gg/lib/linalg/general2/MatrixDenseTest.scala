@@ -1,9 +1,8 @@
-package gg.lib.linalg.general
+package gg.lib.linalg.general2
 
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.prop.Checkers
-import gg.lib.linalg.generalClasses.MatrixDense
 import org.scalatest.junit.JUnitRunner
 
 /**

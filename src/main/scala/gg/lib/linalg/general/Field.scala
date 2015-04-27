@@ -1,6 +1,6 @@
 package gg.lib.linalg.general
 
-import gg.lib.linalg.generalClasses.Complex
+import gg.lib.linalg.general2.Complex
 
 /**
  * Trait representing the concept of Field ( * non-commutative in general) (user is responsible of making sure that (T,+,*) is actually a Field)
@@ -60,6 +60,5 @@ object Field {
     override def *(a: Complex, b: Complex): Complex = a * b
     override def one: Complex = Complex(1.0, 0.0)
     override def inverse(a: Complex): Complex = if (a != Complex(0.0, 0.0)) a.inverse else throw new java.lang.ArithmeticException("Trying to compute the inverse of '0'")
-
   }
 }

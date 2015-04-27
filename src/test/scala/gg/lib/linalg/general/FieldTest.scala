@@ -5,7 +5,7 @@ import org.scalatest._
 import org.scalatest.junit._
 import org.scalatest.prop._
 import org.junit.runner.RunWith
-import gg.lib.linalg.generalClasses.Complex
+import gg.lib.linalg.general2.Complex
 
 /**
  *
@@ -16,7 +16,7 @@ import gg.lib.linalg.generalClasses.Complex
 @RunWith(classOf[JUnitRunner])
 class FieldTest extends FunSuite with Checkers {
 
-  test("Field[(Double,Double)] works as expected") {
+  test("Field[Complex] works as expected") {
     val f = gg.lib.linalg.general.Field.ComplexField
     import f._
     import Complex._

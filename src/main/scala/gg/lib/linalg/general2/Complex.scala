@@ -1,4 +1,4 @@
-package gg.lib.linalg.generalClasses
+package gg.lib.linalg.general2
 
 /**
  * Implementation of Complex numbers. instances are immutable
