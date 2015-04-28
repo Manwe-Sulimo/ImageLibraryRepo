@@ -9,7 +9,7 @@
 //import java.util.logging.Level
 //import gg.lib.utils.ImgUtils
 //import gg.lib.linalg.Decimale
-//import gg.lib.utils.LargeConv
+//import gg.lib.utils.LargeConvolution
 //import java.util.concurrent.ExecutorService
 //import java.util.concurrent.Executors
 //
@@ -90,24 +90,24 @@
 //      0, 0, 0))
 //    // soglia intorno  
 //    println("FIRST CONV")
-//    val mat0 = new LargeConv(matrix, filtro0, 0, pool).call.map(el => if (el >= 1) 1.0 else 0.0)
+//    val mat0 = new LargeConvolution(matrix, filtro0, 0, pool).call.map(el => if (el >= 1) 1.0 else 0.0)
 //    System.gc()
 //    println("SECOND CONV")
 //    // applicazione filtro
-//    val mat1 = new LargeConv(mat0, filtro1, 0, pool).call.map(el => if (el >= 1) 1.0 else 0.0)
+//    val mat1 = new LargeConvolution(mat0, filtro1, 0, pool).call.map(el => if (el >= 1) 1.0 else 0.0)
 //    System.gc()
 //    println("THIRD CONV")
 //    System.gc()
 //    // applicazione filtro
-//    val mat2 = new LargeConv(mat0, filtro2, 0, pool).call.map(el => if (el >= 1) 1.0 else 0.0)
+//    val mat2 = new LargeConvolution(mat0, filtro2, 0, pool).call.map(el => if (el >= 1) 1.0 else 0.0)
 //    println("FOURTH CONV")
 //    System.gc()
 //    // applicazione filtro
-//    val mat3 = new LargeConv(mat0, filtro3, 0, pool).call.map(el => if (el >= 1) 1.0 else 0.0)
+//    val mat3 = new LargeConvolution(mat0, filtro3, 0, pool).call.map(el => if (el >= 1) 1.0 else 0.0)
 //    println("FIFTH CONV")
 //    System.gc()
 //    // applicazione filtro
-//    val mat4 = new LargeConv(mat0, filtro4, 0, pool).call.map(el => if (el >= 1) 1.0 else 0.0)
+//    val mat4 = new LargeConvolution(mat0, filtro4, 0, pool).call.map(el => if (el >= 1) 1.0 else 0.0)
 //
 //    println("SUM RESULTS")
 //    System.gc()
@@ -117,19 +117,19 @@
 //    //    // applicazione filtro
 //    //    println("SEVENTH CONV")
 //    //    System.gc()
-//    //    val mat5 = new LargeConv(mat, filtro1, 0, pool).call.map(el => if (el >= 2) 1.0 else 0.0)
+//    //    val mat5 = new LargeConvolution(mat, filtro1, 0, pool).call.map(el => if (el >= 2) 1.0 else 0.0)
 //    //    // applicazione filtro
 //    //    println("EIGTH CONV")
 //    //    System.gc()
-//    //    val mat6 = new LargeConv(mat, filtro2, 0, pool).call.map(el => if (el >= 2) 1.0 else 0.0)
+//    //    val mat6 = new LargeConvolution(mat, filtro2, 0, pool).call.map(el => if (el >= 2) 1.0 else 0.0)
 //    //    println("NINTH CONV")
 //    //    System.gc()
 //    //    // applicazione filtro
-//    //    val mat7 = new LargeConv(mat, filtro3, 0, pool).call.map(el => if (el >= 2) 1.0 else 0.0)
+//    //    val mat7 = new LargeConvolution(mat, filtro3, 0, pool).call.map(el => if (el >= 2) 1.0 else 0.0)
 //    //    println("TENTH CONV")
 //    //    System.gc()
 //    //    // applicazione filtro
-//    //    val mat8 = new LargeConv(mat, filtro4, 0, pool).call.map(el => if (el >= 2) 1.0 else 0.0)
+//    //    val mat8 = new LargeConvolution(mat, filtro4, 0, pool).call.map(el => if (el >= 2) 1.0 else 0.0)
 //
 //    val result = mat.map(el => if (el > 0) 255.0 else 0.0)
 //    result

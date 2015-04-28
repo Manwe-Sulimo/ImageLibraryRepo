@@ -179,10 +179,21 @@ class MatrixDense[T](mm: Int, nn: Int, elements: Array[T])(implicit ring: Ring[T
  * MatrixDense companion object
  */
 object MatrixDense {
-  def zeros[T](mm: Int, nn: Int)(implicit ring: Ring[T], classTag: ClassTag[T]) = {
+  def zeros[T](mm: Int, nn: Int)(implicit ring: Ring[T], classTag: ClassTag[T]): MatrixDense[T] = {
     new MatrixDense(Array.fill(mm, nn)(ring.zero))
   }
-  def ones[T](mm: Int, nn: Int)(implicit ring: Ring[T], classTag: ClassTag[T]) = {
+  def ones[T](mm: Int, nn: Int)(implicit ring: Ring[T], classTag: ClassTag[T]): MatrixDense[T] = {
     new MatrixDense(Array.fill(mm, nn)(ring.one))
+  }
+  def diag[T](mm: Int, nn: Int, value: T)(implicit ring: Ring[T], classTag: ClassTag[T]): MatrixDense[T] = {
+    val res = zeros[T](mm, nn)
+    for (i <- 0 until math.min(mm, nn)) {
+      res(i, i) = value
+    }
+    res
+  }
+  // square diagonal matrix
+  def diag[T](mn: Int, value: T)(implicit ring: Ring[T], classTag: ClassTag[T]): MatrixDense[T] = {
+    diag[T](mn, mn, value)
   }
 }

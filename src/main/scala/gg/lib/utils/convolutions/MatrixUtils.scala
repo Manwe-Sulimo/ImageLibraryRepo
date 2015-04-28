@@ -4,6 +4,7 @@ import gg.lib.linalg.general2.MatrixDense
 import scala.reflect.ClassTag
 import scala.language.postfixOps
 import gg.lib.linalg.general.Ring
+import java.util.concurrent.ExecutorService
 
 /**
  * Object containing utilities to compute matrix convolutions
@@ -13,12 +14,18 @@ import gg.lib.linalg.general.Ring
  */
 object MatrixUtils {
 
+  //convenience method to call a LargeConvolution
+  def convolution[T](matrix: MatrixDense[T], that: MatrixDense[T], doTab: Boolean = false, tabValue: Option[T] = None, pool: ExecutorService)(implicit ring: Ring[T], classTag: ClassTag[T]) = {
+    new LargeConvolution[T](matrix, that, doTab, tabValue, pool).call
+  }
+
   //simple convolution (single thread)
   //TODO: error handling
-  def simpleConvolution[T](mat: MatrixDense[T], dat: MatrixDense[T], doTab: Boolean)(implicit ring: Ring[T], classTag: ClassTag[T]): MatrixDense[T] = {
+  def simpleConvolution[T](mat: MatrixDense[T], dat: MatrixDense[T], doTab: Boolean = false, tabValue: Option[T] = None)(implicit ring: Ring[T], classTag: ClassTag[T]): MatrixDense[T] = {
+    val _tabValue: T = if (tabValue == None) ring.zero else tabValue.get
     val di = (dat.m - 1) / 2
-    val dj = (dat.m - 1) / 2
-    val actual = if (doTab) tab(mat, di, dj, ring.zero) else mat
+    val dj = (dat.n - 1) / 2
+    val actual = if (doTab) tab(mat, di, dj, _tabValue) else mat
     val res = MatrixDense.zeros[T](actual.m - 2 * di, actual.n - 2 * dj)
     for (i <- di until actual.m - di; j <- dj until actual.n - dj) {
       res(i - di, j - dj) = dot(sub(actual, i, j, di, dj), dat)

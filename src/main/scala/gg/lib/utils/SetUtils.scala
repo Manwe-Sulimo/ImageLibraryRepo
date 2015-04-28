@@ -14,4 +14,10 @@ object SetUtils {
     res
   }
 
+  // returns the cross product of two arrays (as a "sequence of rows")
+  def cross[T <: Any](rows: List[T], columns: List[T]): List[(T, T)] = {
+    val res = rows.flatMap(elr => columns.map(elc => (elr, elc)))
+    res
+  }
+
 }

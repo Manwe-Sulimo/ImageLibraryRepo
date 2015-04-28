@@ -155,4 +155,25 @@ class MatrixDenseTest extends FunSuite with Checkers {
     assert(m1 - m2 == m9)
     assert(m1 + m2 == m10)
   }
+
+  test("MatrixUtils zeros, ones and diag should work as expected") {
+    import gg.lib.linalg.general2.MatrixDense._
+    val z = new MatrixDense(3, 4, Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+    val o = new MatrixDense(4, 3, Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1))
+    val d = new MatrixDense(4, 4, Array(
+      1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      0, 0, 0, 1))
+    val d2 = new MatrixDense(4, 5, Array(
+      1, 0, 0, 0, 0,
+      0, 1, 0, 0, 0,
+      0, 0, 1, 0, 0,
+      0, 0, 0, 1, 0))
+    assert(zeros[Int](3, 4) == z)
+    assert(ones[Int](4, 3) == o)
+    assert(diag[Int](4, 1) == d)
+    assert(diag[Int](4, 5, 1) == d2)
+  }
+
 }

@@ -3,9 +3,15 @@ package gg.lib.utils.convolutions
 import org.junit.runner.RunWith
 import org.scalatest.FunSuite
 import org.scalatest.prop.Checkers
-import org.scalatest.junit.JUnitRunner
+import gg.lib.linalg.general.Ring.IntRing
 import gg.lib.linalg.general2.MatrixDense
-import gg.lib.utils.convolutions.MatrixUtils._
+import gg.lib.linalg.general2.MatrixDense.diag
+import gg.lib.utils.convolutions.MatrixUtils.dot
+import gg.lib.utils.convolutions.MatrixUtils.simpleConvolution
+import gg.lib.utils.convolutions.MatrixUtils.sub
+import gg.lib.utils.convolutions.MatrixUtils.tab
+import org.scalatest.junit.JUnitRunner
+
 /**
  *
  * @author Manwe-Sulimo
@@ -70,7 +76,22 @@ class MatrixUtilsTest extends FunSuite with Checkers {
     val cmat = new MatrixDense(3, 3, cels)
     val cmat2 = new MatrixDense(3, 5, cels2)
     val cmat3 = new MatrixDense(1, 3, cels3)
-    assert(simpleConvolution(mat, cmat, true) == cmat2)
-    assert(simpleConvolution(mat, cmat, false) == cmat3)
+    assert(simpleConvolution(mat, cmat, true, None) == cmat2)
+    assert(simpleConvolution(mat, cmat, true, Some(IntRing.zero)) == cmat2)
+    assert(simpleConvolution(mat, cmat, false, Some(IntRing.zero)) == cmat3)
+    assert(simpleConvolution(mat, cmat) == cmat3)
   }
+
+  test("MatrixUtils simpleConvolution should work as expected with non square matrices") {
+    import gg.lib.linalg.general2.MatrixDense._
+    val mat1 = diag(14, 34, 1)
+    val mat2 = zeros[Int](14, 34)
+    mat2(1, 0) = 2
+    for (i <- 2 to 13) {
+      mat2(i, i - 1) = 3
+    }
+    val dat = diag(5, 3, 1)
+    assert(simpleConvolution(mat1, dat, true, None) == mat2)
+  }
+
 }

@@ -39,6 +39,16 @@ object ImgUtils {
   }
 
   /**
+   * convert an 'int' to an 'int' representing a 'binary pixel'
+   */
+  def int2binary(x: Int) = {
+    (if (x == 0) 0 else 255) * 0x00010101
+  }
+  def double2binary(x: Double) = {
+    (if (x == 0.0) 0 else 255) * 0x00010101
+  }
+
+  /**
    * define how a pixel should be treated
    */
   def parse(el: Tuple4[Int, Int, Int, Int], component: Int = -1): Int = component match {
@@ -59,5 +69,18 @@ object ImgUtils {
       println("Not yet implemented")
       ???
     }
+  }
+
+  def RGBA2DoubleRed(x: Int): Double = {
+    val t = RGBA2intTuple(x)
+    parse(t, 2).toDouble
+  }
+  def RGBA2DoubleGreen(x: Int): Double = {
+    val t = RGBA2intTuple(x)
+    parse(t, 1).toDouble
+  }
+  def RGBA2DoubleBlue(x: Int): Double = {
+    val t = RGBA2intTuple(x)
+    parse(t, 1).toDouble
   }
 }
