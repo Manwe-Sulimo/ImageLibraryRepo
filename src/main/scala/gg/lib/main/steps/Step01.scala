@@ -7,6 +7,7 @@ import java.util.logging.Logger
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import gg.lib.utils.convolutions.Settings.maxThreads
+import gg.lib.main.steps.MatrixDoubleUtils._
 
 class Step01 extends DefaultStep {
   private val log: Logger = Logger.getGlobal()
@@ -42,31 +43,10 @@ class Step01 extends DefaultStep {
       val m4 = convolution(m0, filter4, false, None, pool)
       val m5 = max(max(max(m1, m2), m3), m4)
       val meanValue = mean(m5)
-      meanFiltering(m5, meanValue)
+      meanFiltering(m5, 2 * meanValue)
     } finally {
       pool.shutdown()
     }
   }
 
-  //TODO real errors etc etc
-  def max(mat1: MatrixDense[Double], mat2: MatrixDense[Double]): MatrixDense[Double] = {
-    if (mat1.m != mat2.m || mat1.n != mat2.n) {
-      throw new Exception("cacca")
-    } else {
-      val res = zeros[Double](mat1.m, mat1.n)
-      for (i <- 0 until mat1.m; j <- 0 until mat1.n) {
-        res(i, j) = math.max(math.abs(mat1(i, j)), math.abs(mat2(i, j)))
-      }
-      res
-    }
-  }
-  def mean(mat: MatrixDense[Double]): Double = {
-    mat.structElements.map(el => el.reduce((a, b) => a + b)).reduce((a, b) => a + b) / (mat.m * mat.n)
-  }
-  def meanFiltering(mat: MatrixDense[Double], value: Double): MatrixDense[Double] = {
-    for (i <- 0 until mat.m; j <- 0 until mat.n) {
-      mat(i, j) = if (mat(i, j) > value) 255.0 else 0.0
-    }
-    mat
-  }
 }
