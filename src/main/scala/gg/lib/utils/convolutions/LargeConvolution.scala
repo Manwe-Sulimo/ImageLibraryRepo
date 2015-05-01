@@ -62,6 +62,7 @@ class LargeConvolution[T](matrix: MatrixDense[T], that: MatrixDense[T], doTab: B
 object LargeConvolution {
 
   // returns info on how to split an already tabbed matrix
+  // TODO? equi-split
   // TODO: error handling
   def splitComputations(mm: Int, nn: Int, qq: Int, rr: Int): List[(Int, Int, Int, Int)] = {
     import gg.lib.utils.convolutions.Settings._

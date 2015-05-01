@@ -3,11 +3,13 @@ package gg.lib.main
 import java.util.logging.Logger
 import scala.language.postfixOps
 import gg.lib.main.steps.Step01
-import gg.lib.utils.ImgUtils.RGBA2DoubleBlue
-import gg.lib.utils.ImgUtils.RGBA2DoubleGreen
-import gg.lib.utils.ImgUtils.RGBA2DoubleRed
+import gg.lib.utils.ImgUtils._
 import java.util.logging.Level
 import gg.lib.main.steps.Step02
+import gg.lib.main.steps.Step03
+import java.awt.image.BufferedImage
+import javax.imageio.ImageIO
+import java.io.File
 
 object Prova {
   private val log = Logger.getGlobal()
@@ -19,9 +21,14 @@ object Prova {
     //    new Step01().run("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_green", RGBA2DoubleGreen)
     //    new Step01().run("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_red", RGBA2DoubleRed)
 
-    new Step02().run("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_blue", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_blue_2", RGBA2DoubleBlue)
-    new Step02().run("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_green", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_green_2", RGBA2DoubleGreen)
-    new Step02().run("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_red", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_red_2", RGBA2DoubleRed)
+    //    new Step02().run("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_blue", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_blue_2", RGBA2DoubleBlue)
+    //    new Step02().run("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_green", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_green_2", RGBA2DoubleGreen)
+    //    new Step02().run("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_red", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_red_2", RGBA2DoubleRed)
+
+    //    new Step03().run("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_blue_2", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_blue_3", RGBA2IntBlue)
+    //    new Step03().run("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_green_2", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_green_3", RGBA2IntGreen)
+    //    new Step03().run("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_red_2", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_red_3", RGBA2IntRed)
+    //    new Step03().run("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test1", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test2", RGBA2IntBlue)
 
     val end = System.currentTimeMillis()
     val time = ((end - start).toDouble) / (1000 * 60)
@@ -29,21 +36,6 @@ object Prova {
 
   }
 
-  //  def test = {
-  //    //    for testing
-  //    val arr = Array[Double](1, 1, 1, 1, 0, 1, 1, 1, 1)
-  //
-  //    val arr2 = Array[Double](
-  //      0, 0, 3, 0,
-  //      1, 0, 0, 4,
-  //      2, 0, 0, 5,
-  //      0, 0, 0, 1)
-  //
-  //    val x = new DMatrix[Double](4, 4, arr2)
-  //    val y = new DMatrix[Double](3, 3, arr)
-  //    //    x.tabbedConv(y).collect.foreach(println)
-  //    println()
-  //  }
 }
 
 

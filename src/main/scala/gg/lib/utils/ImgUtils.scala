@@ -37,6 +37,9 @@ object ImgUtils {
   def int2Grey(x: Int) = {
     x * 0x00010101
   }
+  def double2Grey(x: Double) = {
+    x.toInt * 0x00010101
+  }
 
   /**
    * convert an 'int' to an 'int' representing a 'binary pixel'
@@ -82,5 +85,17 @@ object ImgUtils {
   def RGBA2DoubleBlue(x: Int): Double = {
     val t = RGBA2intTuple(x)
     parse(t, 1).toDouble
+  }
+    def RGBA2IntRed(x: Int): Int = {
+    val t = RGBA2intTuple(x)
+    parse(t, 2)
+  }
+  def RGBA2IntGreen(x: Int): Int = {
+    val t = RGBA2intTuple(x)
+    parse(t, 1)
+  }
+  def RGBA2IntBlue(x: Int): Int = {
+    val t = RGBA2intTuple(x)
+    parse(t, 1)
   }
 }

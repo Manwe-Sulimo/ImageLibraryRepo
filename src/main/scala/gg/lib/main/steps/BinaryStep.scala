@@ -9,7 +9,7 @@ import gg.lib.img.Images.writeImage
 import gg.lib.linalg.general2.MatrixDense
 import gg.lib.utils.ImgUtils
 
-trait DefaultStep extends Step[Double] {
+trait BinaryStep extends Step[Double] {
   private val log: Logger = Logger.getGlobal()
   private val fileFilter = new FileFilter() {
     def accept(file: File): Boolean = {

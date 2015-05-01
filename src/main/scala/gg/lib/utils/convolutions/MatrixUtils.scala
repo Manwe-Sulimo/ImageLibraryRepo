@@ -7,11 +7,13 @@ import gg.lib.linalg.general.Ring
 import java.util.concurrent.ExecutorService
 
 /**
- * Object containing utilities to compute matrix convolutions
+ * Object containing utilities to compute matrix convolutions or KMeans
  *
  * @author Manwe-Sulimo
  *
  */
+
+//TODO: refactoring and better naming
 object MatrixUtils {
 
   //convenience method to call a LargeConvolution
@@ -66,6 +68,18 @@ object MatrixUtils {
       res = ring.+(res, ring.*(mat(i, j), dat(i, j)))
     }
     res
+  }
+
+  //compute the maximum element of a matrix with respect to the given implicit norm
+  def max[T](matrix: MatrixDense[T])(implicit norm: T => Double): T = {
+    val rf: (T, T) => T = (a, b) => if (norm(a) < norm(b)) b else a
+    matrix.structElements.map(_.reduce(rf)).reduce(rf)
+  }
+
+  //compute the minimum element of a matrix with respect to the given implicit norm
+  def min[T](matrix: MatrixDense[T])(implicit norm: T => Double): T = {
+    val rf: (T, T) => T = (a, b) => if (norm(a) > norm(b)) b else a
+    matrix.structElements.map(_.reduce(rf)).reduce(rf)
   }
 
 }

@@ -1,14 +1,16 @@
 package gg.lib.main.steps
 
-import gg.lib.linalg.general2.MatrixDense
 import java.util.concurrent.ExecutorService
-import java.util.logging.Logger
 import java.util.concurrent.Executors
-import gg.lib.utils.convolutions.MatrixUtils._
-import gg.lib.utils.convolutions.Settings._
-import gg.lib.main.steps.MatrixDoubleUtils._
+import java.util.logging.Logger
 
-class Step02 extends DefaultStep {
+import gg.lib.linalg.general2.MatrixDense
+import gg.lib.main.steps.MatrixDoubleUtils.binarize
+import gg.lib.main.steps.MatrixDoubleUtils.zeroFiltering
+import gg.lib.utils.convolutions.MatrixUtils.convolution
+import gg.lib.utils.convolutions.Settings.maxThreads
+
+class Step02 extends BinaryStep {
   private val log: Logger = Logger.getGlobal()
 
   override def compute(matrix: MatrixDense[Double]): MatrixDense[Double] = {
