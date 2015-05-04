@@ -6,8 +6,8 @@ import java.util.concurrent.Executors
 import scala.language.postfixOps
 
 import gg.lib.linalg.general2.MatrixDense
-import gg.lib.utils.convolutions.ConnectedComponents
-import gg.lib.utils.convolutions.Settings.maxThreads
+import gg.lib.utils.components.ConnectedComponents
+import gg.lib.utils.settings.Settings.maxThreads
 class Step03 extends GreyStep {
 
   override def compute(matrix: MatrixDense[Int]): MatrixDense[Int] = {

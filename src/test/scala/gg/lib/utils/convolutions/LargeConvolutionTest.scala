@@ -6,6 +6,9 @@ import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.logging.Logger
+import org.scalatest.BeforeAndAfter
+import gg.lib.utils.settings.Settings
 
 /**
  *
@@ -14,7 +17,17 @@ import java.util.concurrent.Executors
  */
 
 @RunWith(classOf[JUnitRunner])
-class LargeConvolutionTest extends FunSuite with Checkers {
+class LargeConvolutionTest extends FunSuite with BeforeAndAfter with Checkers {
+  private val log: Logger = Logger.getGlobal()
+
+  // set up env
+  before {
+    Settings.isTest = true
+  }
+  // clean up env
+  after {
+    Settings.isTest = false
+  }
 
   test("LargeConvolution splitComputations should work as expected") {
     import gg.lib.utils.convolutions.LargeConvolution._

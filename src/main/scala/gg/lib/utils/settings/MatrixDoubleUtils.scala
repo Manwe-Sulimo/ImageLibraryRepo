@@ -1,7 +1,7 @@
-package gg.lib.main.steps
+package gg.lib.utils.settings
 
 import gg.lib.linalg.general2.MatrixDense
-import gg.lib.linalg.general2.MatrixDense._
+import gg.lib.linalg.general2.MatrixDense.zeros
 
 object MatrixDoubleUtils {
 

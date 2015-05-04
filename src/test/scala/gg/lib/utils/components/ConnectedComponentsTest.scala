@@ -1,13 +1,15 @@
-package gg.lib.utils.convolutions
+package gg.lib.utils.components
 
 import org.junit.runner.RunWith
 import org.scalatest.prop.Checkers
 import org.scalatest.FunSuite
-import org.scalatest.junit.JUnitRunner
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import gg.lib.linalg.general2.MatrixDense
 import java.util.logging.Logger
+import org.scalatest.BeforeAndAfter
+import gg.lib.utils.settings.Settings
+import org.scalatest.junit.JUnitRunner
 
 /**
  *
@@ -16,8 +18,17 @@ import java.util.logging.Logger
  */
 
 @RunWith(classOf[JUnitRunner])
-class ConnectedComponentsTest extends FunSuite with Checkers {
+class ConnectedComponentsTest extends FunSuite with BeforeAndAfter with Checkers {
   private val log: Logger = Logger.getGlobal()
+
+  // set up env
+  before {
+    Settings.isTest = true
+  }
+  // clean up env
+  after {
+    Settings.isTest = false
+  }
 
   test("ConnectedComponents call should work as expected in single-thread mode") {
     val els = Array(

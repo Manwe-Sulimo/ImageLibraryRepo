@@ -5,11 +5,11 @@ import java.util.concurrent.Executors
 import java.util.logging.Logger
 
 import gg.lib.linalg.general2.MatrixDense
-import gg.lib.main.steps.MatrixDoubleUtils.max
-import gg.lib.main.steps.MatrixDoubleUtils.mean
-import gg.lib.main.steps.MatrixDoubleUtils.meanFiltering
+import gg.lib.utils.settings.MatrixDoubleUtils.max
+import gg.lib.utils.settings.MatrixDoubleUtils.mean
+import gg.lib.utils.settings.MatrixDoubleUtils.meanFiltering
 import gg.lib.utils.convolutions.MatrixUtils.convolution
-import gg.lib.utils.convolutions.Settings.maxThreads
+import gg.lib.utils.settings.Settings.maxThreads
 
 class Step01 extends BinaryStep {
   private val log: Logger = Logger.getGlobal()

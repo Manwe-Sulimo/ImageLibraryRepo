@@ -27,8 +27,8 @@ object Prova {
 
     //    new Step03().run("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_blue_2", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_blue_3", RGBA2IntBlue)
     //    new Step03().run("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_green_2", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_green_3", RGBA2IntGreen)
-    //    new Step03().run("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_red_2", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_red_3", RGBA2IntRed)
-    //    new Step03().run("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test1", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test2", RGBA2IntBlue)
+        new Step03().run("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_red_2", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_red_3", RGBA2IntRed)
+
 
     val end = System.currentTimeMillis()
     val time = ((end - start).toDouble) / (1000 * 60)
