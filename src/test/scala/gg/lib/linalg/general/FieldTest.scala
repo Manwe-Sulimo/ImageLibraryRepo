@@ -16,7 +16,7 @@ import gg.lib.linalg.general2.Complex
 @RunWith(classOf[JUnitRunner])
 class FieldTest extends FunSuite with Checkers {
 
-  test("Field[Complex] works as expected") {
+  test("Field[Complex] should work as expected") {
     val f = gg.lib.linalg.general.Field.ComplexField
     import f._
     import Complex._
