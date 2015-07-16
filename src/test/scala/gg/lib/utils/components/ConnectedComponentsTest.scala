@@ -10,6 +10,7 @@ import java.util.logging.Logger
 import org.scalatest.BeforeAndAfter
 import gg.lib.utils.settings.Settings
 import org.scalatest.junit.JUnitRunner
+import org.scalatest.BeforeAndAfterAll
 
 /**
  *
@@ -18,15 +19,15 @@ import org.scalatest.junit.JUnitRunner
  */
 
 @RunWith(classOf[JUnitRunner])
-class ConnectedComponentsTest extends FunSuite with BeforeAndAfter with Checkers {
+class ConnectedComponentsTest extends FunSuite with BeforeAndAfterAll with Checkers {
   private val log: Logger = Logger.getGlobal()
 
   // set up env
-  before {
+  override def beforeAll() {
     Settings.isTest = true
   }
   // clean up env
-  after {
+  override def afterAll() {
     Settings.isTest = false
   }
 

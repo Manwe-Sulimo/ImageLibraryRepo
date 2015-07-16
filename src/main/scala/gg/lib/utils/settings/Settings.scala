@@ -13,4 +13,6 @@ object Settings {
   def rowStep: Int = if (isTest) 10 else 400
   def colStep: Int = if (isTest) 15 else 400
 
+  //other magic settings
+  val maxLoops = 1000
 }

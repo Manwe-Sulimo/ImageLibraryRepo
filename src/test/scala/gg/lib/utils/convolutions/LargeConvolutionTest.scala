@@ -9,6 +9,7 @@ import java.util.concurrent.Executors
 import java.util.logging.Logger
 import org.scalatest.BeforeAndAfter
 import gg.lib.utils.settings.Settings
+import org.scalatest.BeforeAndAfterAll
 
 /**
  *
@@ -17,25 +18,29 @@ import gg.lib.utils.settings.Settings
  */
 
 @RunWith(classOf[JUnitRunner])
-class LargeConvolutionTest extends FunSuite with BeforeAndAfter with Checkers {
+class LargeConvolutionTest extends FunSuite with BeforeAndAfterAll with Checkers {
   private val log: Logger = Logger.getGlobal()
 
   // set up env
-  before {
+  override def beforeAll() {
     Settings.isTest = true
   }
   // clean up env
-  after {
+  override def afterAll() {
     Settings.isTest = false
   }
 
-  test("LargeConvolution splitComputations should work as expected") {
+  test("LargeConvolution splitComputations should work as expected (case 1)") {
     import gg.lib.utils.convolutions.LargeConvolution._
     val (m1, n1, q1, r1) = (7, 11, 3, 4)
     val expected1 = List((0, 6, 0, 10))
+    assert(splitComputations(m1, n1, q1, r1) == expected1)
+  }
+
+  test("LargeConvolution splitComputations should work as expected (case 2)") {
+    import gg.lib.utils.convolutions.LargeConvolution._
     val (m2, n2, q2, r2) = (24, 40, 5, 3)
     val expected2 = List((0, 14, 0, 17), (0, 14, 12, 39), (5, 23, 0, 17), (5, 23, 12, 39))
-    assert(splitComputations(m1, n1, q1, r1) == expected1)
     assert(splitComputations(m2, n2, q2, r2) == expected2)
   }
 

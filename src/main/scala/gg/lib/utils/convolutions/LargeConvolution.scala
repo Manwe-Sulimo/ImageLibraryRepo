@@ -4,10 +4,8 @@ import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.FutureTask
 import java.util.logging.Logger
-
 import scala.language.postfixOps
 import scala.reflect.ClassTag
-
 import gg.lib.linalg.general.Ring
 import gg.lib.linalg.general2.MatrixDense
 import gg.lib.utils.SetUtils.cross
@@ -16,6 +14,7 @@ import gg.lib.utils.settings.Settings.colStep
 import gg.lib.utils.settings.Settings.colThresh
 import gg.lib.utils.settings.Settings.rowStep
 import gg.lib.utils.settings.Settings.rowThresh
+import gg.lib.utils.settings.Settings
 
 /**
  * Callable for multithreading matrix convolution
@@ -66,7 +65,6 @@ object LargeConvolution {
   // TODO: error handling
   def splitComputations(mm: Int, nn: Int, qq: Int, rr: Int): List[(Int, Int, Int, Int)] = {
     import gg.lib.utils.settings.Settings._
-
     //if matrix number of rows is too big, split it (splits must intersect adjacent splits)
     var istep = if (mm >= rowThresh) rowStep else mm
     var inodes = ((0 to mm by istep).toList).dropRight(1)
