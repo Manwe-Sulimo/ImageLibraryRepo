@@ -33,14 +33,14 @@ class KMeansTest extends FunSuite with BeforeAndAfterAll with Checkers {
     Settings.isTest = false
   }
 
-  //  test("KMeans splitComputations should work as expected") {
-  //    val (m1, n1) = (7, 11)
-  //    val expected1 = List((0, 6, 0, 10))
-  //    val (m2, n2) = (24, 40)
-  //    val expected2 = List((0, 9, 0, 14), (0, 9, 15, 39), (10, 23, 0, 14), (10, 23, 15, 39))
-  //    assert(KMeans.splitComputations(m1, n1) == expected1)
-  //    assert(KMeans.splitComputations(m2, n2) == expected2)
-  //  }
+  test("KMeans splitComputations should work as expected") {
+    val (m1, n1) = (7, 11)
+    val expected1 = List((0, 6, 0, 10))
+    val (m2, n2) = (24, 40)
+    val expected2 = List((0, 9, 0, 14), (0, 9, 15, 39), (10, 23, 0, 14), (10, 23, 15, 39))
+    assert(KMeans.splitComputations(m1, n1) == expected1)
+    assert(KMeans.splitComputations(m2, n2) == expected2)
+  }
 
   test("KMeans initializeKnots should work as expected") {
     val els = Array(
@@ -64,7 +64,7 @@ class KMeansTest extends FunSuite with BeforeAndAfterAll with Checkers {
     assert(KMeans.updateKnots[Int](knots, mAc).zip(expected).forall(el => el._1 == el._2))
   }
 
-  test("KMeans should work as expected") {
+  test("KMeans should work as expected in single-thread mode") {
     implicit val f: ((Double, Int), (Double, Int)) => (Double, Int) = (x, y) => (x._1 + y._1, x._2 + y._2)
     implicit val g: (Double, (Double, Int)) => Double = (a, x) => (x._1 - a) / 2
     implicit val h: (Double, Int) => Double = (x, y) => x / math.max(1, y)
@@ -77,11 +77,69 @@ class KMeansTest extends FunSuite with BeforeAndAfterAll with Checkers {
       5, 0, 0, 10, 20, 15, 10,
       5, 0, 0, 10, 10, 15, 10,
       5, 0, 0, 10, 10, 15, 10)
-    val model = new KMeans(new MatrixDense(6, 7, els), 4, 10000, 0.0001, metric, pool)
-    val result = model.call()
-    //    println(model._sk.foldLeft("")((x, y) => x + "----" + y) + "----")
-    //    println(result.foldLeft("[")((x, y) => x + "    " + y) + "    ]")
-    assert(true)
+    val model = new KMeans(new MatrixDense(6, 7, els), Array(0.0, 15.0), 10000, 0.0001, metric, pool)
+    try {
+      val expectedResult = Array(1.666, 14.791)
+      val result = model.call()
+      val trimmedResult = result.map(x => ((x * 1000).toInt + 0.0) / 1000)
+      assert(trimmedResult zip expectedResult forall { case (a, b) => a == b })
+    } finally {
+      pool.shutdown()
+    }
+  }
+
+  test("KMeans should work as expected in multi-thread mode") {
+    implicit val f: ((Double, Int), (Double, Int)) => (Double, Int) = (x, y) => (x._1 + y._1, x._2 + y._2)
+    implicit val g: (Double, (Double, Int)) => Double = (a, x) => (x._1 - a) / 2
+    implicit val h: (Double, Int) => Double = (x, y) => x / math.max(1, y)
+    val metric: (Double, Double) => Double = (x, y) => math.sqrt((x - y) * (x - y))
+    val pool: ExecutorService = Executors.newFixedThreadPool(Settings.maxThreads)
+    val els = Array[Double](
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30,
+      5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30, 5, 0, 0, 10, 20, 10, 10, 30, 30, 20, 30)
+    val model = new KMeans(new MatrixDense(36, 22, els), Array(4.0, 28.0), 10000, 0.0001, metric, pool)
+    try {
+      val expectedResult = Array(5.833, 26.000)
+      val result = model.call()
+      val trimmedResult = result.map(x => ((x * 1000).toInt + 0.0) / 1000)
+      assert(trimmedResult zip expectedResult forall { case (a, b) => a == b })
+    } finally {
+      pool.shutdown()
+    }
   }
 
 }

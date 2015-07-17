@@ -17,7 +17,6 @@ import gg.lib.utils.settings.Settings
  * @author Manwe-Sulimo
  *
  * TODO: input validation and error handling
- * TODO: testing
  */
 class KMeans[T](matrix: MatrixDense[T], numKnots: Int, numIters: Int, eps: Double, metric: (T, T) => Double, pool: ExecutorService)(implicit f: ((T, Int), (T, Int)) => (T, Int), g: (T, (T, Int)) => T, ring: Ring[T], h: (T, Int) => T, classTag: ClassTag[T]) extends Callable[Array[T]] {
   private val log = Logger.getGlobal()
