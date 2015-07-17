@@ -54,4 +54,14 @@ object Ring {
   implicit val DoubleRing: Ring[Double] = DoubleField
   implicit val BigDecimalRing: Ring[BigDecimal] = BigDecimalField
   implicit val ComplexRing: Ring[Complex] = ComplexField
+
+  // temp defs
+  implicit object RGBRing extends Ring[(Int, Int, Int)] {
+    type rgb = (Int, Int, Int)
+    override def +(a: rgb, b: rgb): rgb = (a._1 + b._1, a._2 + b._2, a._3 + b._3)
+    override def -(a: rgb): rgb = (-a._1, -a._2, -a._3)
+    override def zero: rgb = (0, 0, 0)
+    override def *(a: rgb, b: rgb): rgb = (a._1 * b._1, a._2 * b._2, a._3 * b._3)
+    override def one: rgb = (1, 1, 1)
+  }
 }

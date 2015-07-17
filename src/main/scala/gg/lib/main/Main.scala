@@ -10,6 +10,7 @@ import gg.lib.main.steps.Step03
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
 import java.io.File
+import gg.lib.main.steps.Step04
 
 object Prova {
   private val log = Logger.getGlobal()
@@ -27,8 +28,9 @@ object Prova {
 
     //    new Step03().run("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_blue_2", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_blue_3", RGBA2IntBlue)
     //    new Step03().run("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_green_2", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_green_3", RGBA2IntGreen)
-        new Step03().run("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_red_2", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_red_3", RGBA2IntRed)
-
+    //    new Step03().run("C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_red_2", "C:\\Users\\Tinvention\\Desktop\\sample\\0-processed\\temp\\test_red_3", RGBA2IntRed)
+    val tt: Int => Int = { x => x }
+    new Step04().run("C:\\Users\\Tinvention\\Desktop\\stuff\\sample\\0-processed\\temp", "C:\\Users\\Tinvention\\Desktop\\stuff\\sample\\0-processed\\temp\\kmeans", tt)
 
     val end = System.currentTimeMillis()
     val time = ((end - start).toDouble) / (1000 * 60)
